@@ -1,0 +1,161 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Scanner;
+
+class ATM {
+   private static Scanner input;
+   private static double balance;
+   private static ArrayList<String> history;
+   private static String pin;
+   private static String accNo;
+   private static String name;
+
+   ATM() {
+   }
+
+   public static void main(String[] var0) {
+      CreateAc();
+
+      while(true) {
+         System.out.print("\nEnter your PIN: ");
+         if (input.nextLine().equals(pin)) {
+            System.out.println("\nWelcome to SBI  " + name);
+            System.out.println("Your account Number: " + accNo);
+
+            int var1;
+            do {
+               showMenu();
+               System.out.print("Choose an option: ");
+               var1 = input.nextInt();
+               switch (var1) {
+                  case 1:
+                     showHistory();
+                     break;
+                  case 2:
+                     showBalance();
+                     break;
+                  case 3:
+                     withdraw();
+                     break;
+                  case 4:
+                     deposit();
+                     break;
+                  case 5:
+                     transfer();
+                     break;
+                  case 6:
+                     System.out.println("Thank you for Connect with SBI. Thank You !!\n Visit again..");
+                     break;
+                  default:
+                     System.out.println("Invalid option !! Try again...");
+               }
+            } while(var1 != 6);
+
+            return;
+         }
+
+         System.out.println("Incorrect PIN !! Please try again..");
+      }
+   }
+
+   private static void CreateAc() {
+      System.out.println("SBI Welcome You !!");
+      System.out.print("Enter your name: ");
+      name = input.nextLine();
+      accNo = generateAccNo();
+      System.out.println("Your Account number: " + accNo);
+      System.out.print("Set a 4-digit PIN: ");
+
+      for(pin = input.nextLine(); pin.length() != 4 || !pin.matches("\\d+"); pin = input.nextLine()) {
+         System.out.print("Invalid PIN. Enter a 4-digit number: ");
+      }
+
+      System.out.println("Account Created Successfully..");
+   }
+
+   private static String generateAccNo() {
+      return String.valueOf(100 + (new Random()).nextInt(900));
+   }
+
+   private static void showMenu() {
+      System.out.println("\n*** Menu ***:");
+      System.out.println("1. Transaction History.");
+      System.out.println("2. Check Balance.");
+      System.out.println("3. Withdraw.");
+      System.out.println("4. Deposit.");
+      System.out.println("5. Transfer.");
+      System.out.println("6. Quit.");
+   }
+
+   private static void showHistory() {
+      System.out.println("\nTransaction History:");
+      if (history.isEmpty()) {
+         System.out.println("No transactions available.");
+      } else {
+         ArrayList var10000 = history;
+         PrintStream var10001 = System.out;
+         Objects.requireNonNull(var10001);
+         var10000.forEach(var10001::println);
+      }
+
+   }
+
+   private static void showBalance() {
+      System.out.println("\nCurrent Balance: $" + balance);
+   }
+
+   private static void withdraw() {
+      System.out.print("Enter amount to withdraw: ");
+      double var0 = input.nextDouble();
+      if (var0 > balance) {
+         System.out.println("Insufficient Balance.");
+      } else if (var0 <= 0.0) {
+         System.out.println("Invalid amount.");
+      } else {
+         balance -= var0;
+         history.add("Withdrawn: $" + var0);
+         System.out.println("Withdrawal successful. New Balance: $" + balance);
+      }
+
+   }
+
+   private static void deposit() {
+      System.out.print("Enter amount to deposit: ");
+      double var0 = input.nextDouble();
+      if (var0 <= 0.0) {
+         System.out.println("Invalid amount.");
+      } else {
+         balance += var0;
+         history.add("Deposited: $" + var0);
+         System.out.println("Deposit successful. New Balance: $" + balance);
+      }
+
+   }
+
+   private static void transfer() {
+      System.out.print("Enter recipient account number: ");
+      input.nextLine();
+      String var0 = input.nextLine();
+      System.out.print("Enter amount to transfer: ");
+      double var1 = input.nextDouble();
+      if (var1 > balance) {
+         System.out.println("Insufficient balance.");
+      } else if (var1 <= 0.0) {
+         System.out.println("Invalid amount.");
+      } else {
+         balance -= var1;
+         history.add("Transferred: $" + var1 + " to Account: " + var0);
+         System.out.println("Transfer successful. New Balance: $" + balance);
+      }
+
+   }
+
+   static {
+      input = new Scanner(System.in);
+      balance = 1000.0;
+      history = new ArrayList();
+   }
+}
